@@ -88,6 +88,9 @@ func (c *rdsCollector) updateActiveReservation(context context.Context, ch chan<
 		return fmt.Errorf("To execute DescribeDBInstancesAsList() was failed: %w", err)
 	}
 	for _, reservation := range reservations {
+		if *reservation.State != "active" {
+			continue
+		}
 		value, err := c.nuConverter.Convert(*reservation.DBInstanceClass, float64(reservation.DBInstanceCount))
 		if err != nil {
 			return err
