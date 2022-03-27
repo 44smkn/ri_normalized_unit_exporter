@@ -74,3 +74,4 @@ Collectors that are enabled by default can be disabled by providing a `--no-coll
 |-----------|-------------------------------------------------|------------------------------------------------|
 | rds       | `aws_ri_rds_running_instance_normalized_unit`   | Normalized Units for each running RDS instance |
 | rds       | `aws_ri_rds_active_reservation_normalized_unit` | Normalized Units for each active reservation   |
+| rds       | `aws_ri_rds_reservation_remaining_days`         | Remaining days of each active reservation      |
