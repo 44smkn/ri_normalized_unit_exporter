@@ -32,7 +32,8 @@ You will need to have AWS API credentials configured. What works for AWS CLI, sh
 ### Docker
 
 ```sh
-docker run -d -e AWS_REGION=ap-northeast-1 ghcr.io/44smkn/ri-normalized-unit-exporter:latest --log.level=debug
+docker run -d -e AWS_REGION=ap-northeast-1 \ 
+  ghcr.io/44smkn/ri-normalized-unit-exporter:latest --log.level=debug
 ```
 
 ### Kubernetes
@@ -41,21 +42,21 @@ docker run -d -e AWS_REGION=ap-northeast-1 ghcr.io/44smkn/ri-normalized-unit-exp
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ri-normalized-unit-exporter
+  name: aws-ri-exporter
   labels:
-    app: ri-normalized-unit-exporter
+    app: aws-ri-exporter
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ri-normalized-unit-exporter
+      app: aws-ri-exporter
   template:
     metadata:
       labels:
-        app: ri-normalized-unit-exporter
+        app: aws-ri-exporter
     spec:
       containers:
-      - name: ri-normalized-unit-exporter
+      - name: aws-ri-exporter
         image: ghcr.io/44smkn/zenhub_exporter:latest
         ports:
         - containerPort: 9981
