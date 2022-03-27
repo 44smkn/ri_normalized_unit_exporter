@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/44smkn/ri_normalized_unit_exporter/pkg/aws"
-	"github.com/44smkn/ri_normalized_unit_exporter/pkg/collector"
-	"github.com/44smkn/ri_normalized_unit_exporter/pkg/normalizedunit"
+	"github.com/44smkn/aws_ri_exporter/pkg/aws"
+	"github.com/44smkn/aws_ri_exporter/pkg/collector"
+	"github.com/44smkn/aws_ri_exporter/pkg/normalizedunit"
 	"github.com/go-kit/log/level"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -35,7 +35,7 @@ var (
 )
 
 func init() {
-	prometheus.MustRegister(version.NewCollector("ri_normalized_unit_exporter"))
+	prometheus.MustRegister(version.NewCollector("aws_ri_exporter"))
 }
 
 func main() {
@@ -45,12 +45,12 @@ func main() {
 func run(args []string) int {
 	promlogConfig := &promlog.Config{}
 	flag.AddFlags(kingpin.CommandLine, promlogConfig)
-	kingpin.Version(version.Print("ri_normalized_unit_exporter"))
+	kingpin.Version(version.Print("aws_ri_exporter"))
 	kingpin.HelpFlag.Short('h')
 	kingpin.Parse()
 
 	logger := promlog.New(promlogConfig)
-	level.Info(logger).Log("msg", "Starting ri_normalized_unit_exporter", "version", version.Info())
+	level.Info(logger).Log("msg", "Starting aws_ri_exporter", "version", version.Info())
 	level.Info(logger).Log("msg", "Build context", "context", version.BuildContext())
 
 	// setup aws client and register exporter

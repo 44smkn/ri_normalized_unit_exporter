@@ -3,7 +3,7 @@ package aws
 import (
 	"context"
 
-	"github.com/44smkn/ri_normalized_unit_exporter/pkg/aws/services"
+	"github.com/44smkn/aws_ri_exporter/pkg/aws/services"
 	awscfg "github.com/aws/aws-sdk-go-v2/config"
 )
 

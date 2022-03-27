@@ -1,4 +1,4 @@
-module github.com/44smkn/ri_normalized_unit_exporter
+module github.com/44smkn/aws_ri_exporter
 
 go 1.17
 
