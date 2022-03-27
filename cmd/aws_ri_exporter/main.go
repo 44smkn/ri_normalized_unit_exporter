@@ -74,7 +74,7 @@ func run(args []string) int {
 		w.Write([]byte(`<html>
 <head><title>AWS Reserved Instance Exporter</title></head>
 <body>
-<h1>AWS Reserved Instance Normalized Unit Per Hour Exporter</h1>
+<h1>AWS Reserved Instance Exporter</h1>
 <p><a href='` + *metricsPath + `'>Metrics</a></p>
 </body>
 </html>`))

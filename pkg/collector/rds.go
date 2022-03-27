@@ -33,12 +33,12 @@ type rdsCollector struct {
 func NewRDSCollector(aws aws.Cloud, nuConverter nu.Converter, logger log.Logger) Collector {
 	c := &rdsCollector{
 		runningInstance: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, rdsCollectorSubsystem, "running_instance"),
+			prometheus.BuildFQName(namespace, rdsCollectorSubsystem, "running_instance_normalized_unit"),
 			"Normalized Units for each running RDS instance.",
 			[]string{"region", "instance_class", "engine", "instance_id"}, nil,
 		),
 		activeReservation: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, rdsCollectorSubsystem, "active_reservation"),
+			prometheus.BuildFQName(namespace, rdsCollectorSubsystem, "active_reservation_normalized_unit"),
 			"Normalized Units for each purchased reservation",
 			[]string{"region", "instance_class", "engine", "reservation_id"}, nil,
 		),
