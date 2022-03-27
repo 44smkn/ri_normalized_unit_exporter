@@ -3,6 +3,8 @@ package collector
 import (
 	"context"
 	"fmt"
+	"math"
+	"time"
 
 	"github.com/44smkn/aws_ri_exporter/pkg/aws"
 	"github.com/44smkn/aws_ri_exporter/pkg/aws/services"
@@ -21,8 +23,9 @@ func init() {
 }
 
 type rdsCollector struct {
-	runningInstance   *prometheus.Desc
-	activeReservation *prometheus.Desc
+	runningInstance          *prometheus.Desc
+	activeReservation        *prometheus.Desc
+	reservationRemainingDays *prometheus.Desc
 
 	logger      log.Logger
 	rds         services.RDS
@@ -39,8 +42,13 @@ func NewRDSCollector(aws aws.Cloud, nuConverter nu.Converter, logger log.Logger)
 		),
 		activeReservation: prometheus.NewDesc(
 			prometheus.BuildFQName(namespace, rdsCollectorSubsystem, "active_reservation_normalized_unit"),
-			"Normalized Units for each purchased reservation",
+			"Normalized Units for each active reservation",
 			[]string{"region", "instance_class", "engine", "reservation_id"}, nil,
+		),
+		reservationRemainingDays: prometheus.NewDesc(
+			prometheus.BuildFQName(namespace, rdsCollectorSubsystem, "reservation_remaining_days"),
+			"Remaining days of each active reservation",
+			[]string{"region", "reservation_id"}, nil,
 		),
 		logger:      logger,
 		rds:         aws.RDS(),
@@ -51,7 +59,7 @@ func NewRDSCollector(aws aws.Cloud, nuConverter nu.Converter, logger log.Logger)
 }
 
 func (c *rdsCollector) Update(ctx context.Context, ch chan<- prometheus.Metric) error {
-	if err := c.updateActiveReservation(ctx, ch); err != nil {
+	if err := c.updateReservation(ctx, ch); err != nil {
 		return err
 	}
 	return c.updateRunningInstance(ctx, ch)
@@ -81,7 +89,7 @@ func (c *rdsCollector) updateRunningInstance(context context.Context, ch chan<- 
 	return nil
 }
 
-func (c *rdsCollector) updateActiveReservation(context context.Context, ch chan<- prometheus.Metric) error {
+func (c *rdsCollector) updateReservation(context context.Context, ch chan<- prometheus.Metric) error {
 	params := &rds.DescribeReservedDBInstancesInput{}
 	reservations, err := c.rds.DescribeReservedDBInstancesAsList(context, params)
 	if err != nil {
@@ -91,14 +99,26 @@ func (c *rdsCollector) updateActiveReservation(context context.Context, ch chan<
 		if *reservation.State != "active" {
 			continue
 		}
-		value, err := c.nuConverter.Convert(*reservation.DBInstanceClass, float64(reservation.DBInstanceCount))
+
+		// reservation_remaining_days
+		remainingDays := getRemainingDays(*reservation.StartTime, time.Duration(reservation.Duration)*time.Second, time.Now())
+		ch <- prometheus.MustNewConstMetric(
+			c.reservationRemainingDays,
+			prometheus.GaugeValue,
+			remainingDays,
+			c.region,
+			*reservation.ReservedDBInstanceId,
+		)
+
+		// active_reservation_normalized_unit
+		normalizedUnit, err := c.nuConverter.Convert(*reservation.DBInstanceClass, float64(reservation.DBInstanceCount))
 		if err != nil {
 			return err
 		}
 		ch <- prometheus.MustNewConstMetric(
 			c.activeReservation,
 			prometheus.GaugeValue,
-			value,
+			normalizedUnit,
 			c.region,
 			*reservation.DBInstanceClass,
 			*reservation.ProductDescription,
@@ -106,4 +126,10 @@ func (c *rdsCollector) updateActiveReservation(context context.Context, ch chan<
 		)
 	}
 	return nil
+}
+
+func getRemainingDays(startTime time.Time, reservationDuration time.Duration, now time.Time) float64 {
+	expiredTime := startTime.Add(reservationDuration)
+	remainingHour := expiredTime.Sub(now).Hours()
+	return math.Ceil(remainingHour / 24)
 }
