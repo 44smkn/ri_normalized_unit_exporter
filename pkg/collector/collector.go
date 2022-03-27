@@ -6,8 +6,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/44smkn/ri_normalized_unit_exporter/pkg/aws"
-	nu "github.com/44smkn/ri_normalized_unit_exporter/pkg/normalizedunit"
+	"github.com/44smkn/aws_ri_exporter/pkg/aws"
+	nu "github.com/44smkn/aws_ri_exporter/pkg/normalizedunit"
 	"github.com/go-kit/log"
 	"github.com/go-kit/log/level"
 	"github.com/prometheus/client_golang/prometheus"
@@ -15,19 +15,19 @@ import (
 )
 
 const (
-	namespace = "ri_normalized_unit"
+	namespace = "aws_ri"
 )
 
 var (
 	scrapeDurationDesc = prometheus.NewDesc(
 		prometheus.BuildFQName(namespace, "scrape", "duration_seconds"),
-		"eri_normalized_unit_exporter: Duration of a collector scrape.",
+		"eaws_ri_exporter: Duration of a collector scrape.",
 		[]string{"collector"},
 		nil,
 	)
 	scrapeSuccessDesc = prometheus.NewDesc(
 		prometheus.BuildFQName(namespace, "scrape", "success"),
-		"eri_normalized_unit_exporter: Whether a collector succeeded.",
+		"eaws_ri_exporter: Whether a collector succeeded.",
 		[]string{"collector"},
 		nil,
 	)

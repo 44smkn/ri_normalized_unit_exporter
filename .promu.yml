@@ -1,11 +1,11 @@
 go:
   version: 1.17
 repository:
-  path: github.com/44smkn/ri_normalized_unit_exporter
+  path: github.com/44smkn/aws_ri_exporter
 build:
   binaries:
-    - name: ri_normalized_unit_exporter
-      path: ./cmd/ri_normalized_unit_exporter
+    - name: aws_ri_exporter
+      path: ./cmd/aws_ri_exporter
   ldflags: |
     -X github.com/prometheus/common/version.Version={{.Version}}
     -X github.com/prometheus/common/version.Revision={{.Revision}}

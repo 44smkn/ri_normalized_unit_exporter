@@ -3,7 +3,7 @@ package normalizedunit_test
 import (
 	"testing"
 
-	"github.com/44smkn/ri_normalized_unit_exporter/pkg/normalizedunit"
+	"github.com/44smkn/aws_ri_exporter/pkg/normalizedunit"
 )
 
 func Test_defaultConverter_Convert(t *testing.T) {

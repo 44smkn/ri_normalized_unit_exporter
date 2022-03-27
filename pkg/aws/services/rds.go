@@ -9,7 +9,7 @@ import (
 	rdstypes "github.com/aws/aws-sdk-go-v2/service/rds/types"
 )
 
-//go:generate mockgen -destination=rds_mocks.go -package=services github.com/44smkn/ri_normalized_unit_exporter/pkg/aws/services RDS
+//go:generate mockgen -destination=rds_mocks.go -package=services github.com/44smkn/aws_ri_exporter/pkg/aws/services RDS
 type RDS interface {
 	// Wrapper to DescribeDBInstances, which aggregates paged results into list.
 	DescribeDBInstancesAsList(context.Context, *rds.DescribeDBInstancesInput) ([]rdstypes.DBInstance, error)

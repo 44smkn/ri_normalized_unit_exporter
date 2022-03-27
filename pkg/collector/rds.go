@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/44smkn/ri_normalized_unit_exporter/pkg/aws"
-	"github.com/44smkn/ri_normalized_unit_exporter/pkg/aws/services"
-	nu "github.com/44smkn/ri_normalized_unit_exporter/pkg/normalizedunit"
+	"github.com/44smkn/aws_ri_exporter/pkg/aws"
+	"github.com/44smkn/aws_ri_exporter/pkg/aws/services"
+	nu "github.com/44smkn/aws_ri_exporter/pkg/normalizedunit"
 	"github.com/aws/aws-sdk-go-v2/service/rds"
 	"github.com/go-kit/log"
 	"github.com/prometheus/client_golang/prometheus"
