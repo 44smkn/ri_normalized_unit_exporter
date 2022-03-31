@@ -1,3 +1,7 @@
+## 0.2.0 / 2022-03-31
+
+* Add metrics
+
 ## 0.1.1 / 2022-03-15
 
 * Check whether reservation is active
