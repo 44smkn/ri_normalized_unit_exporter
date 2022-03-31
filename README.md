@@ -33,7 +33,7 @@ You will need to have AWS API credentials configured. What works for AWS CLI, sh
 
 ```sh
 docker run -d -e AWS_REGION=ap-northeast-1 \ 
-  ghcr.io/44smkn/ri-normalized-unit-exporter:latest --log.level=debug
+  ghcr.io/44smkn/aws_ri_exporter:v0.2.0 --log.level=debug
 ```
 
 ### Kubernetes
