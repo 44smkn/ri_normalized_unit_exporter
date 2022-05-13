@@ -8,7 +8,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/rds v1.21.1
 	github.com/go-kit/log v0.2.0
 	github.com/golang/mock v1.6.0
-	github.com/prometheus/client_golang v1.12.1
+	github.com/prometheus/client_golang v1.12.2
 	github.com/prometheus/common v0.34.0
 	github.com/prometheus/exporter-toolkit v0.7.1
 	gopkg.in/alecthomas/kingpin.v2 v2.2.6
