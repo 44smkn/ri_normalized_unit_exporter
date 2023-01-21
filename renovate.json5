@@ -6,6 +6,7 @@
     "gomodTidy",
     "gomodUpdateImportPaths",
   ],
+  platformAutomerge: true,
   packageRules: [
     {
       matchUpdateTypes: ["minor", "patch", "pin"],
