@@ -8,6 +8,7 @@ import (
 	"github.com/44smkn/aws_ri_exporter/pkg/aws"
 	"github.com/44smkn/aws_ri_exporter/pkg/collector"
 	"github.com/44smkn/aws_ri_exporter/pkg/normalizedunit"
+	"github.com/go-kit/log"
 	"github.com/go-kit/log/level"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -53,18 +54,14 @@ func run(args []string) int {
 	level.Info(logger).Log("msg", "Starting aws_ri_exporter", "version", version.Info())
 	level.Info(logger).Log("msg", "Build context", "context", version.BuildContext())
 
-	// setup aws client and register exporter
-	http.Handle(*metricsPath, promhttp.Handler())
-
 	ctx := context.TODO()
 	cloud, err := aws.NewCloud(ctx)
 	if err != nil {
 		level.Error(logger).Log("failed to initialize aws config")
 		return exitCodeInitializeAWSConfigError
 	}
-	converter := normalizedunit.NewConverter()
-	c := collector.NewRINormalizedUnitCollector(cloud, converter, logger)
-	prometheus.MustRegister(c)
+
+	http.Handle(*metricsPath, initPromHandler(cloud, true, logger))
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/" {
@@ -87,4 +84,11 @@ func run(args []string) int {
 		return exitCodeStartServerError
 	}
 	return exitCodeOK
+}
+
+func initPromHandler(cloud aws.Cloud, enableScrapeMetrics bool, logger log.Logger) http.Handler {
+	converter := normalizedunit.NewConverter()
+	c := collector.NewRINormalizedUnitCollector(cloud, converter, logger)
+	prometheus.MustRegister(c)
+	return promhttp.Handler()
 }

@@ -1,0 +1,17 @@
+# HELP aws_ri_rds_active_reservation_normalized_unit Normalized Units for each active reservation
+# TYPE aws_ri_rds_active_reservation_normalized_unit gauge
+aws_ri_rds_active_reservation_normalized_unit{engine="postgres",instance_class="db.r6g.4xlarge",region="ap-northeast-1",reservation_id="myreservedinstance"} 0
+# HELP aws_ri_rds_reservation_remaining_days Remaining days of each active reservation
+# TYPE aws_ri_rds_reservation_remaining_days gauge
+aws_ri_rds_reservation_remaining_days{region="ap-northeast-1",reservation_id="myreservedinstance"} -90
+# HELP aws_ri_rds_running_instance_normalized_unit Normalized Units for each running RDS instance.
+# TYPE aws_ri_rds_running_instance_normalized_unit gauge
+aws_ri_rds_running_instance_normalized_unit{engine="mysql",instance_class="db.r6g.2xlarge",instance_id="test-1",region="ap-northeast-1"} 16
+# HELP promhttp_metric_handler_requests_in_flight Current number of scrapes being served.
+# TYPE promhttp_metric_handler_requests_in_flight gauge
+promhttp_metric_handler_requests_in_flight 1
+# HELP promhttp_metric_handler_requests_total Total number of scrapes by HTTP status code.
+# TYPE promhttp_metric_handler_requests_total counter
+promhttp_metric_handler_requests_total{code="200"} 0
+promhttp_metric_handler_requests_total{code="500"} 0
+promhttp_metric_handler_requests_total{code="503"} 0

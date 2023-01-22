@@ -32,8 +32,9 @@ var (
 		nil,
 	)
 
-	factories      = make(map[string]func(aws.Cloud, nu.Converter, log.Logger) Collector)
-	collectorState = make(map[string]*bool)
+	factories           = make(map[string]func(aws.Cloud, nu.Converter, log.Logger) Collector)
+	collectorState      = make(map[string]*bool)
+	EnableScrapeMetrics = true
 )
 
 func registerCollector(collector string, isDefaultEnabled bool,
@@ -105,6 +106,9 @@ func execute(ctx context.Context, name string, c Collector, ch chan<- prometheus
 		level.Debug(logger).Log("msg", "collector succeeded", "name", name, "duration_seconds", duration.Seconds())
 		success = 1
 	}
-	ch <- prometheus.MustNewConstMetric(scrapeDurationDesc, prometheus.GaugeValue, duration.Seconds(), name)
-	ch <- prometheus.MustNewConstMetric(scrapeSuccessDesc, prometheus.GaugeValue, success, name)
+
+	if EnableScrapeMetrics {
+		ch <- prometheus.MustNewConstMetric(scrapeDurationDesc, prometheus.GaugeValue, duration.Seconds(), name)
+		ch <- prometheus.MustNewConstMetric(scrapeSuccessDesc, prometheus.GaugeValue, success, name)
+	}
 }
