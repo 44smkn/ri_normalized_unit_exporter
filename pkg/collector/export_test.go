@@ -1,3 +1,6 @@
 package collector
 
-var GetRemainingDays = getRemainingDays
+var (
+	GetRemainingDays         = getRemainingDays
+	ConvertToNormalizedUnits = convertToNormalizedUnits
+)

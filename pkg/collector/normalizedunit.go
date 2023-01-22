@@ -1,26 +1,12 @@
-package normalizedunit
+package collector
 
 import (
 	"fmt"
 	"strings"
 )
 
-type Converter interface {
-	Convert(instanceClass string, instanceCount float64) (float64, error)
-}
-
-func NewConverter() Converter {
-	return &defaultConverter{
-		normalizedUnitTable: classSuffixNormalizedUnitFactorTable,
-	}
-}
-
-type defaultConverter struct {
-	normalizedUnitTable map[string]float64
-}
-
-func (c *defaultConverter) Convert(instanceClass string, instanceCount float64) (float64, error) {
-	for classSuffix, normalizedUnit := range c.normalizedUnitTable {
+func convertToNormalizedUnits(instanceClass string, instanceCount float64) (float64, error) {
+	for classSuffix, normalizedUnit := range classSuffixNormalizedUnitFactorTable {
 		if strings.HasSuffix(instanceClass, classSuffix) {
 			return normalizedUnit * instanceCount, nil
 		}
