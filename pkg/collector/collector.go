@@ -32,8 +32,9 @@ var (
 		nil,
 	)
 
-	factories      = make(map[string]func(aws.Cloud, nu.Converter, log.Logger) Collector)
-	collectorState = make(map[string]*bool)
+	factories           = make(map[string]func(aws.Cloud, nu.Converter, log.Logger) Collector)
+	collectorState      = make(map[string]*bool)
+	EnableScrapeMetrics = true
 )
 
 func registerCollector(collector string, isDefaultEnabled bool,
@@ -55,8 +56,9 @@ type Collector interface {
 }
 
 type riNormalizedUnitCollector struct {
-	Collectors map[string]Collector
-	logger     log.Logger
+	Collectors         map[string]Collector
+	logger             log.Logger
+	enableScrapMetrics bool
 }
 
 func NewRINormalizedUnitCollector(aws aws.Cloud, normalizedUnitConverter nu.Converter, logger log.Logger) *riNormalizedUnitCollector {
@@ -105,6 +107,9 @@ func execute(ctx context.Context, name string, c Collector, ch chan<- prometheus
 		level.Debug(logger).Log("msg", "collector succeeded", "name", name, "duration_seconds", duration.Seconds())
 		success = 1
 	}
-	ch <- prometheus.MustNewConstMetric(scrapeDurationDesc, prometheus.GaugeValue, duration.Seconds(), name)
-	ch <- prometheus.MustNewConstMetric(scrapeSuccessDesc, prometheus.GaugeValue, success, name)
+
+	if EnableScrapeMetrics {
+		ch <- prometheus.MustNewConstMetric(scrapeDurationDesc, prometheus.GaugeValue, duration.Seconds(), name)
+		ch <- prometheus.MustNewConstMetric(scrapeSuccessDesc, prometheus.GaugeValue, success, name)
+	}
 }
