@@ -30,9 +30,8 @@ const (
 
 var (
 	// common configuration
-	webConfig     = webflag.AddFlags(kingpin.CommandLine)
-	listenAddress = kingpin.Flag("web.listen-address", "Address to listen on for web interface and telemetry.").Default(":9981").Envar("WEB_LISTEN_ADDRESS").String()
-	metricsPath   = kingpin.Flag("web.telemetry-path", "Path under which to expose metrics.").Default("/metrics").Envar("WEB_TELEMETRY_PATH").String()
+	webConfig   = webflag.AddFlags(kingpin.CommandLine, ":9981")
+	metricsPath = kingpin.Flag("web.telemetry-path", "Path under which to expose metrics.").Default("/metrics").Envar("WEB_TELEMETRY_PATH").String()
 )
 
 func init() {
@@ -77,9 +76,9 @@ func run(args []string) int {
 </html>`))
 	})
 
-	level.Info(logger).Log("msg", "Listening on address", "address", listenAddress)
-	srv := &http.Server{Addr: *listenAddress}
-	if err := web.ListenAndServe(srv, *webConfig, logger); err != nil {
+	level.Info(logger).Log("msg", "Listening on address", "address", webConfig.WebListenAddresses)
+	srv := &http.Server{}
+	if err := web.ListenAndServe(srv, webConfig, logger); err != nil {
 		level.Error(logger).Log("msg", "Error starting HTTP server", "err", err)
 		return exitCodeStartServerError
 	}
