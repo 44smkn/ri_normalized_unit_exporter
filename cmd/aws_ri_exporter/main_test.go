@@ -43,12 +43,15 @@ func TestHanler(t *testing.T) {
 		},
 	}, nil)
 
+	// If not parsed, the default value set by kingpin will not be set.
+	// If we don't do this, the collector will not be enable.
 	_, err := kingpin.CommandLine.Parse([]string{})
 	if err != nil {
 		t.Errorf("failed to parse command line: %v", err)
 		return
 	}
 
+	// Clear the collector set by init()
 	registry := prometheus.NewRegistry()
 	prometheus.DefaultRegisterer = registry
 	prometheus.DefaultGatherer = registry
