@@ -56,9 +56,8 @@ type Collector interface {
 }
 
 type riNormalizedUnitCollector struct {
-	Collectors         map[string]Collector
-	logger             log.Logger
-	enableScrapMetrics bool
+	Collectors map[string]Collector
+	logger     log.Logger
 }
 
 func NewRINormalizedUnitCollector(aws aws.Cloud, normalizedUnitConverter nu.Converter, logger log.Logger) *riNormalizedUnitCollector {
