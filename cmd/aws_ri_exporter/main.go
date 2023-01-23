@@ -7,7 +7,6 @@ import (
 
 	"github.com/44smkn/aws_ri_exporter/pkg/aws"
 	"github.com/44smkn/aws_ri_exporter/pkg/collector"
-	"github.com/44smkn/aws_ri_exporter/pkg/normalizedunit"
 	"github.com/go-kit/log"
 	"github.com/go-kit/log/level"
 	"github.com/prometheus/client_golang/prometheus"
@@ -86,8 +85,7 @@ func run(args []string) int {
 }
 
 func initPromHandler(cloud aws.Cloud, enableScrapeMetrics bool, logger log.Logger) http.Handler {
-	converter := normalizedunit.NewConverter()
-	c := collector.NewRINormalizedUnitCollector(cloud, converter, logger)
+	c := collector.NewRINormalizedUnitsCollector(cloud, logger)
 	prometheus.MustRegister(c)
 	return promhttp.Handler()
 }

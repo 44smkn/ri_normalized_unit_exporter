@@ -1,12 +1,12 @@
-package normalizedunit_test
+package collector_test
 
 import (
 	"testing"
 
-	"github.com/44smkn/aws_ri_exporter/pkg/normalizedunit"
+	"github.com/44smkn/aws_ri_exporter/pkg/collector"
 )
 
-func Test_defaultConverter_Convert(t *testing.T) {
+func TestConvertToNormalizedUnits(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name          string
@@ -28,12 +28,11 @@ func Test_defaultConverter_Convert(t *testing.T) {
 		},
 	}
 
-	converter := normalizedunit.NewConverter()
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			got, err := converter.Convert(tt.instanceClass, tt.instanceCount)
+			got, err := collector.ConvertToNormalizedUnits(tt.instanceClass, tt.instanceCount)
 			if err != nil {
 				t.Errorf("failed to convert: %v", err)
 			}

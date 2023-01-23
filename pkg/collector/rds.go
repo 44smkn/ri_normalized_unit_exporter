@@ -8,7 +8,6 @@ import (
 
 	"github.com/44smkn/aws_ri_exporter/pkg/aws"
 	"github.com/44smkn/aws_ri_exporter/pkg/aws/services"
-	nu "github.com/44smkn/aws_ri_exporter/pkg/normalizedunit"
 	"github.com/aws/aws-sdk-go-v2/service/rds"
 	"github.com/go-kit/log"
 	"github.com/prometheus/client_golang/prometheus"
@@ -27,13 +26,12 @@ type rdsCollector struct {
 	activeReservation        *prometheus.Desc
 	reservationRemainingDays *prometheus.Desc
 
-	logger      log.Logger
-	rds         services.RDS
-	nuConverter nu.Converter
-	region      string
+	logger log.Logger
+	rds    services.RDS
+	region string
 }
 
-func NewRDSCollector(aws aws.Cloud, nuConverter nu.Converter, logger log.Logger) Collector {
+func NewRDSCollector(aws aws.Cloud, logger log.Logger) Collector {
 	c := &rdsCollector{
 		runningInstance: prometheus.NewDesc(
 			prometheus.BuildFQName(namespace, rdsCollectorSubsystem, "running_instance_normalized_unit"),
@@ -50,10 +48,9 @@ func NewRDSCollector(aws aws.Cloud, nuConverter nu.Converter, logger log.Logger)
 			"Remaining days of each active reservation",
 			[]string{"region", "reservation_id"}, nil,
 		),
-		logger:      logger,
-		rds:         aws.RDS(),
-		nuConverter: nuConverter,
-		region:      aws.Region(),
+		logger: logger,
+		rds:    aws.RDS(),
+		region: aws.Region(),
 	}
 	return c
 }
@@ -72,7 +69,7 @@ func (c *rdsCollector) updateRunningInstance(context context.Context, ch chan<- 
 		return fmt.Errorf("To execute DescribeDBInstancesAsList() was failed: %w", err)
 	}
 	for _, instance := range instances {
-		value, err := c.nuConverter.Convert(*instance.DBInstanceClass, 1)
+		value, err := convertToNormalizedUnits(*instance.DBInstanceClass, 1)
 		if err != nil {
 			return err
 		}
@@ -111,7 +108,7 @@ func (c *rdsCollector) updateReservation(context context.Context, ch chan<- prom
 		)
 
 		// active_reservation_normalized_unit
-		normalizedUnit, err := c.nuConverter.Convert(*reservation.DBInstanceClass, float64(reservation.DBInstanceCount))
+		normalizedUnit, err := convertToNormalizedUnits(*reservation.DBInstanceClass, float64(reservation.DBInstanceCount))
 		if err != nil {
 			return err
 		}

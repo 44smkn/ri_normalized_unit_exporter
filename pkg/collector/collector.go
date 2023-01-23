@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/44smkn/aws_ri_exporter/pkg/aws"
-	nu "github.com/44smkn/aws_ri_exporter/pkg/normalizedunit"
 	"github.com/go-kit/log"
 	"github.com/go-kit/log/level"
 	"github.com/prometheus/client_golang/prometheus"
@@ -32,13 +31,13 @@ var (
 		nil,
 	)
 
-	factories           = make(map[string]func(aws.Cloud, nu.Converter, log.Logger) Collector)
+	factories           = make(map[string]func(aws.Cloud, log.Logger) Collector)
 	collectorState      = make(map[string]*bool)
 	EnableScrapeMetrics = true
 )
 
 func registerCollector(collector string, isDefaultEnabled bool,
-	factory func(aws aws.Cloud, converter nu.Converter, logger log.Logger) Collector) {
+	factory func(aws aws.Cloud, logger log.Logger) Collector) {
 	flagName := fmt.Sprintf("collector.%s", collector)
 	flagHelp := fmt.Sprintf("Enable the %s collector (default: %v).", collector, isDefaultEnabled)
 	defaultValue := fmt.Sprintf("%v", isDefaultEnabled)
@@ -55,21 +54,21 @@ type Collector interface {
 	Update(context.Context, chan<- prometheus.Metric) error
 }
 
-type riNormalizedUnitCollector struct {
+type riNormalizedUnitsCollector struct {
 	Collectors map[string]Collector
 	logger     log.Logger
 }
 
-func NewRINormalizedUnitCollector(aws aws.Cloud, normalizedUnitConverter nu.Converter, logger log.Logger) *riNormalizedUnitCollector {
+func NewRINormalizedUnitsCollector(aws aws.Cloud, logger log.Logger) *riNormalizedUnitsCollector {
 	collectors := make(map[string]Collector)
 	for key, enabled := range collectorState {
 		if !*enabled {
 			continue
 		}
-		collector := factories[key](aws, normalizedUnitConverter, log.With(logger, "collector", key))
+		collector := factories[key](aws, log.With(logger, "collector", key))
 		collectors[key] = collector
 	}
-	c := &riNormalizedUnitCollector{
+	c := &riNormalizedUnitsCollector{
 		Collectors: collectors,
 		logger:     logger,
 	}
@@ -77,10 +76,10 @@ func NewRINormalizedUnitCollector(aws aws.Cloud, normalizedUnitConverter nu.Conv
 }
 
 // Describe implements the prometheus.Collector interface
-func (c *riNormalizedUnitCollector) Describe(ch chan<- *prometheus.Desc) {}
+func (c *riNormalizedUnitsCollector) Describe(ch chan<- *prometheus.Desc) {}
 
 // Collect implements the prometheus.Collector interface.
-func (r *riNormalizedUnitCollector) Collect(ch chan<- prometheus.Metric) {
+func (r *riNormalizedUnitsCollector) Collect(ch chan<- prometheus.Metric) {
 	wg := sync.WaitGroup{}
 	ctx := context.TODO()
 	wg.Add(len(r.Collectors))
