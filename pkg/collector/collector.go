@@ -54,12 +54,12 @@ type Collector interface {
 	Update(context.Context, chan<- prometheus.Metric) error
 }
 
-type riNormalizedUnitsCollector struct {
+type awsRICollector struct {
 	Collectors map[string]Collector
 	logger     log.Logger
 }
 
-func NewRINormalizedUnitsCollector(aws aws.Cloud, logger log.Logger) *riNormalizedUnitsCollector {
+func NewAWSRICollector(aws aws.Cloud, logger log.Logger) *awsRICollector {
 	collectors := make(map[string]Collector)
 	for key, enabled := range collectorState {
 		if !*enabled {
@@ -68,7 +68,7 @@ func NewRINormalizedUnitsCollector(aws aws.Cloud, logger log.Logger) *riNormaliz
 		collector := factories[key](aws, log.With(logger, "collector", key))
 		collectors[key] = collector
 	}
-	c := &riNormalizedUnitsCollector{
+	c := &awsRICollector{
 		Collectors: collectors,
 		logger:     logger,
 	}
@@ -76,10 +76,10 @@ func NewRINormalizedUnitsCollector(aws aws.Cloud, logger log.Logger) *riNormaliz
 }
 
 // Describe implements the prometheus.Collector interface
-func (c *riNormalizedUnitsCollector) Describe(ch chan<- *prometheus.Desc) {}
+func (c *awsRICollector) Describe(ch chan<- *prometheus.Desc) {}
 
 // Collect implements the prometheus.Collector interface.
-func (r *riNormalizedUnitsCollector) Collect(ch chan<- prometheus.Metric) {
+func (r *awsRICollector) Collect(ch chan<- prometheus.Metric) {
 	wg := sync.WaitGroup{}
 	ctx := context.TODO()
 	wg.Add(len(r.Collectors))
