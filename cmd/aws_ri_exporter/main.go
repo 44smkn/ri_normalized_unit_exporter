@@ -59,7 +59,7 @@ func run(args []string) int {
 		return exitCodeInitializeAWSConfigError
 	}
 
-	http.Handle(*metricsPath, initPromHandler(cloud, true, logger))
+	http.Handle(*metricsPath, initPromHandler(cloud, logger))
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/" {
@@ -84,7 +84,7 @@ func run(args []string) int {
 	return exitCodeOK
 }
 
-func initPromHandler(cloud aws.Cloud, enableScrapeMetrics bool, logger log.Logger) http.Handler {
+func initPromHandler(cloud aws.Cloud, logger log.Logger) http.Handler {
 	c := collector.NewRINormalizedUnitsCollector(cloud, logger)
 	prometheus.MustRegister(c)
 	return promhttp.Handler()

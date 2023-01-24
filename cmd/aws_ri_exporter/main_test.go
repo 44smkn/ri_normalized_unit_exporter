@@ -59,7 +59,7 @@ func TestHanler(t *testing.T) {
 
 	fc := aws.NewMockCloud(mockRDS)
 	logger := promlog.New(&promlog.Config{})
-	s := httptest.NewServer(initPromHandler(fc, false, logger))
+	s := httptest.NewServer(initPromHandler(fc, logger))
 	defer s.Close()
 
 	resp, err := http.Get(s.URL + "/metrics")
