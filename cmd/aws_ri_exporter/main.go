@@ -85,7 +85,7 @@ func run(args []string) int {
 }
 
 func initPromHandler(cloud aws.Cloud, logger log.Logger) http.Handler {
-	c := collector.NewRINormalizedUnitsCollector(cloud, logger)
+	c := collector.NewAWSRICollector(cloud, logger)
 	prometheus.MustRegister(c)
 	return promhttp.Handler()
 }
