@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/aws/aws-sdk-go-v2 v1.17.4
 	github.com/aws/aws-sdk-go-v2/config v1.18.12
-	github.com/aws/aws-sdk-go-v2/service/rds v1.40.1
+	github.com/aws/aws-sdk-go-v2/service/rds v1.40.2
 	github.com/go-kit/log v0.2.1
 	github.com/golang/mock v1.6.0
 	github.com/prometheus/client_golang v1.14.0
