@@ -3,7 +3,7 @@ module github.com/44smkn/aws_ri_exporter
 go 1.20
 
 require (
-	github.com/aws/aws-sdk-go-v2 v1.20.1
+	github.com/aws/aws-sdk-go-v2 v1.20.2
 	github.com/aws/aws-sdk-go-v2/config v1.18.30
 	github.com/aws/aws-sdk-go-v2/service/rds v1.50.1
 	github.com/go-kit/log v0.2.1
