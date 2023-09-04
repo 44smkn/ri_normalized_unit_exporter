@@ -14,7 +14,7 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version: 1.20.7
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         # update the pull request branch
         with:
           ref: ${{ github.head_ref }}
@@ -33,7 +33,7 @@ jobs:
       - uses: actions/setup-go@v3
         with:
           go-version: 1.20.7
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: go mod download
       - run: go test -race ./...
       - run: go build -v ./cmd/aws_ri_exporter
@@ -41,5 +41,5 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: golangci/golangci-lint-action@v3
