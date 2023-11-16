@@ -12,7 +12,7 @@ require (
 	github.com/prometheus/common v0.40.0
 	github.com/prometheus/exporter-toolkit v0.8.2
 	github.com/sergi/go-diff v1.3.1
-	gopkg.in/alecthomas/kingpin.v2 v2.2.6
+	gopkg.in/alecthomas/kingpin.v2 v2.4.0
 )
 
 require (
